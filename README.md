@@ -1,5 +1,5 @@
 # CWL207 Project
-### Title: Visualization of IMDb Ratings of Actors' Filmographies
+### Title: Interactive Visualization of IMDb Ratings of Actors' Filmographies
 
 ### Author: Konstantin Ilin
 
