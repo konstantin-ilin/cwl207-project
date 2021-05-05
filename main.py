@@ -1,5 +1,4 @@
 import imdb
-import pandas as pd
 import csv
 
 moviesDB = imdb.IMDb()
