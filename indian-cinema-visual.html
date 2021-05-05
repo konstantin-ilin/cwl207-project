@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+<form>
+  <div class="form-group">
+    <input type="file" class="form-control-file" id="data-input">
+  </div>
+</form>
+
+<style>
+  body {
+    font: 15px sans-serif;
+  }
+
+  .tooltip {
+    position: absolute;
+    width: 1000px;
+    height: 28px;
+    pointer-events: none;
+  }
+</style>
+
+<div id="scatter-area"></div>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"></script>
+<script>
+  const dataInput = document.getElementById("data-input");
+  dataInput.addEventListener("change", () => {
+    Papa.parse(dataInput.files[0], {
+      header: true,
+      complete: (results) => {
+        const data = getDataArray(results.data);
+        createVisualization(data);
+      }
+    });
+  });
+  const createVisualization = (data) => {
+    const margin = { top: 20, right: 350, bottom: 50, left: 70 };
+    const width = 1600 - margin.left - margin.right;
+    const height = 800 - margin.top - margin.bottom;
+
+    const sVg = d3.select("#scatter-area")
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+
+    const min_x = Math.min.apply(Math, data.map((o) => { return o.x; }));
+    const max_x = Math.max.apply(Math, data.map((o) => { return o.x; }));
+
+    // set up x
+    const x = d3.scaleTime()
+      .domain([min_x, max_x])
+      .range([0, width]);
+
+    sVg.append('g')
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x));
+
+    sVg.append("text")
+      .attr("transform", "translate(" + (width / 2) + " ," + (height + margin.top + 20) + ")")
+      .style("text-anchor", "middle")
+      .text("Release Date")
+
+    const min_y = Math.min.apply(Math, data.map((o) => { return o.y }));
+    const max_y = Math.max.apply(Math, data.map((o) => { return o.y }));
+
+    // setup y
+    const y = d3.scaleLinear()
+      .domain([min_y - 1, max_y + 1])
+      .range([height, 0]);
+
+    sVg.append('g')
+      .call(d3.axisLeft(y))
+
+    // setup fill color
+    var cValue = function (d) { return d.genre_color; },
+      color = d3.scaleOrdinal(d3.schemeCategory10);
+
+    // add the tooltip area to the webpage
+    var tooltip = d3.select("body").append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0)
+
+    sVg.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left)
+      .attr("x", 0 - (height / 2))
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .text("IMDb Rating (out of 10)")
+
+    sVg.selectAll("whatever")
+      .data(data)
+      .enter().append("circle")
+      .attr("class", "dot")
+      .attr("cx", function (d) { return x(d.x) })
+      .attr("cy", function (d) { return y(d.y) })
+      .attr("r", 7)
+      .style("fill", function (d) { return color(cValue(d)); })
+      .on("mouseover", function (d) {
+        tooltip.transition()
+          .duration(200)
+          .style("opacity", .9);
+          tooltip.html("<i>" + "<b>" + "Title: " + d["title"] + ", " + d["release_date"] + "</b>" + "</i>" + "<br>"
+                           + "<b>" + "Director(s): "  + "</b>" + d["director"] + "<br>" 
+                           + "<b>" + "Studio(s): "    + "</b>" + d["studio"] + "<br>" 
+                           + "<b>" + "Genre(s): "     + "</b>" + d["genre"] + "<br>" 
+                           + "<b>" + "IMDb rating: "  + "</b>" + d["rating"] + "<br>")
+
+          .style("left", (d3.event.pageX + 5) + "px")
+          .style("top", (d3.event.pageY - 28) + "px");
+      })
+      .on("mouseout", function (d) {
+        tooltip.transition()
+          .duration(500)
+          .style("opacity", 0);
+      });
+
+  };
+
+  const getDataArray = (rows) => {
+    const data = [];
+    rows.forEach((item, index) => {
+      const genres = item["genre"].split(',');
+      data.push({
+        x: createDate(item["release date"]),
+        release_date: item["release date"],
+        y: item["rating"],
+        title: item["title"],
+        genre_color: genres[0],
+        genre: item["genre"],
+        director: item["director"],
+        studio: item["studio"],
+        rating: item["rating"]
+      });
+    });
+    return data;
+  }
+
+  const createDate = (s) => {
+    return new Date(s, 0);
+  };
+</script>
+
+</html>
