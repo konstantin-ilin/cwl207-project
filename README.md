@@ -4,7 +4,9 @@
 ### Author: Konstantin Ilin
 
 ## Description
-This project uses Python script from ``main.py`` to extract the filmography of a specified actor, which is later saved to a ``.csv`` file. Then this file can be opened using ``indian-cinema-visual.html`` to visualize the actor's filmography. The resulting graph provides an insight into how successful an actor's career is (or was) based on IMDb rating. 
+This project uses Python script from ``main.py`` to extract the filmography of a specified actor, which is later saved to a ``.csv`` file. Then this file can be opened using ``indian-cinema-visual.html`` to visualize the actor's filmography. The resulting graph provides an insight into how successful an actor's career is (or was) based on IMDb rating.
+
+``Note: imdbpy library needs to be installed to run Python script``
 
 When positioned over a data entry, the mouse cursor opens a window that shows more detailed information about the selected film. These additional parameters are: _Title, Release Year, Director(s), Studio(s), Genre(s), IMDb Rating_. 
 
