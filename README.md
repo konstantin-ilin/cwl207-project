@@ -22,4 +22,4 @@ It perfectly shows that all of the movies Raj Kapoor starred in were well-receiv
 
 It also shows years he was active and how the reception of his movies progressed through his career. 
 
-Lastly, the graph classifies movies into different categories based on genre (different colors of entries), allowing us to conclude that Raj Kapoor mostly starred in comedies (green circles) and dramas (blue circle).
+Lastly, the graph classifies movies into different categories based on genre (different colors of entries), allowing us to conclude that Raj Kapoor mostly starred in comedies (green circles) and dramas (blue circles).
